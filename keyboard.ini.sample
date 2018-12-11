@@ -1,0 +1,4 @@
+[general]
+exit = esc
+up = ctrl+windows+up
+down = ctrl+windows+down

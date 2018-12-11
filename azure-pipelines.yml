@@ -1,0 +1,100 @@
+jobs:
+
+- job: 'Test_Linux'
+  timeoutInMinutes: 5
+  pool:
+    vmImage: 'Ubuntu 16.04'
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: 3.7
+      architecture: 'x64'
+
+  - script: |
+      sudo apt-get update -qy
+      sudo apt-get install -y python3-dev python-dev python-pip
+      sudo apt-get install -y espeak
+      sudo apt-get install xvfb
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+      pip install -r requirements_test.txt
+    displayName: 'Install prerequisites'
+
+  - script: |
+      sudo cp xvfb.init /etc/init.d/xvfb
+      sudo chmod +x /etc/init.d/xvfb
+      sudo update-rc.d xvfb defaults
+      sudo service xvfb start
+    displayName: 'Start X Virtual Frame Buffer'
+
+  - script: |
+      export DISPLAY=:10
+      pytest
+    condition: succeededOrFailed()
+    displayName: 'Run tests'
+
+  - script: |
+      flake8 .
+    displayName: 'Run lint tests'
+
+  - script: |
+      pyinstaller --clean pardal.spec
+    displayName: 'Build'
+
+- job: 'Test_MacOS'
+  timeoutInMinutes: 5
+  pool:
+    vmImage: 'macOS-10.13'
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: 3.7
+      architecture: 'x64'
+
+  - script: |
+      brew update && brew upgrade
+      brew install espeak
+      python -m pip install --upgrade pip
+      pip install -U pyobjc
+      pip install -r requirements.txt
+      pip install -r requirements_test.txt
+    displayName: 'Install prerequisites'
+
+  - script: |
+      pytest
+    condition: succeededOrFailed()
+    displayName: 'Run tests'
+
+  - script: |
+      pyinstaller --clean pardal.spec
+    displayName: 'Build'
+
+
+- job: 'Test_Windows'
+  timeoutInMinutes: 5
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: 3.7
+      architecture: 'x64'
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -U pypiwin32
+      pip install -r requirements.txt
+      pip install -r requirements_test.txt
+    displayName: 'Install prerequisites'
+
+  - script: |
+      pytest
+    condition: succeededOrFailed()
+    displayName: 'Run tests'
+
+  - script: |
+      pyinstaller --clean pardal.spec
+    displayName: 'Build'

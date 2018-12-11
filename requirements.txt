@@ -1,0 +1,8 @@
+Flask==1.0.2
+isort==4.3.4
+peewee==3.7.0
+pyinstaller==3.4
+pynput==1.4
+pyttsx3==2.7
+requests_oauthlib==1.0.0
+sentry-sdk==0.4.3
