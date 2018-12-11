@@ -97,9 +97,6 @@ sudo make run
 - [ ] Config on .spec instead of Makefile: https://stackoverflow.com/a/23597180/1344295
 - [ ] Check current bugs
 - [ ] Check Sentry DSN being public
-- [ ] Add build to Azure (generating version)
-- [ ] Check if is possible to publish generated version
-when merged with dev
 
 ## Troubleshooting
 
